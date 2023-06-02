@@ -67,7 +67,7 @@ const App = () => {
         <p>{currentMessage}</p>
       </div>
       <footer className="p-4 text-xs font-mono font-thin">
-        <p>Esta app esta hecha con ♥ y GPT-4 (lo cual no es gratis) asi que si te gusto, <span className="uppercase font-bold">pagara prata</span>  </p>
+        <p className="text-center">Esta app esta hecha con ♥ y GPT-4 (lo cual no es gratis) asi que si te gusto, <span className="uppercase font-bold">pagara prata</span>  </p>
         <a href='https://cafecito.app/horagutierrez' rel='noopener' target='_blank'><img srcSet='https://cdn.cafecito.app/imgs/buttons/button_1.png 1x, https://cdn.cafecito.app/imgs/buttons/button_1_2x.png 2x, https://cdn.cafecito.app/imgs/buttons/button_1_3.75x.png 3.75x' src='https://cdn.cafecito.app/imgs/buttons/button_1.png' alt='Invitame un café en cafecito.app' className="m-auto" /></a>
       </footer>
     </>
