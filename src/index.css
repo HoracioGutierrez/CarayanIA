@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+#message {
+  background: linear-gradient(268.17deg, #242424 6.09%, #414044 82.17%);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 0 4px 4px rgb(255 255 255 / 5%),
+    0 0 8px 8px rgb(255 255 255 / 5%),
+    0 0 16px 16px rgb(255 255 255 / 5%);
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+#message:focus {
+  box-shadow: 0 0 4px 4px rgb(255 255 255 / 30%),
+    0 0 8px 8px rgb(255 255 255 / 20%),
+    0 0 16px 16px rgb(255 255 255 / 10%);
+}
+
+.item {
+  background-color: rgba(156, 163, 175, 0.205);
+}
