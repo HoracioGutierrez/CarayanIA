@@ -7,7 +7,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export const complete = async (text, cb) => {
-    openai.createChatCompletion({
+    return openai.createChatCompletion({
         model: "gpt-4",
         stream: true,
         messages: [

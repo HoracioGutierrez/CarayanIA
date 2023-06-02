@@ -1,21 +1,72 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { complete } from "./openai";
 import { InstagramLogoIcon } from "@radix-ui/react-icons";
+import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+import { auth, requestsCollection } from "./firebase";
+import { addDoc, getDocs, query, serverTimestamp, where } from "firebase/firestore";
 
 const App = () => {
 
   const ref = useRef(null);
   const [currentMessage, setMessage] = useState("");
   const [value, setValue] = useState("")
+  const [user, setUser] = useState(null)
+  const [logged, setLogged] = useState(false)
+  const [currentAttempts, setAttempts] = useState(0)
+
+  useEffect(() => {
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        setUser(user)
+        setLogged(true)
+        
+        const filterByEmail = query(requestsCollection, where("user", "==", user.email))
+        const attemptsRequest = getDocs(filterByEmail)
+        attemptsRequest
+        .then((querySnapshot) => {
+          setAttempts(querySnapshot.size)
+        })
+        .catch((error) => {
+          console.log("Error getting documents: ", error);
+        });
+      } else {
+        setUser(null)
+        setLogged(false)
+      }
+    })
+  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!logged) {
+      handlePopUp()
+      return
+    }
     const message = ref.current.value;
     setMessage("")
     complete(message, data => {
-      const res = data.choices[0].delta.content
-      setMessage((prevState, next) => {
-        return prevState + res
+      try {
+        const res = data.choices[0].delta.content
+        setMessage((prevState, next) => {
+          return prevState + res
+        })
+      }catch(err){
+        console.log(err)
+      }
+    })
+    .then(()=>{
+      addDoc(requestsCollection,{
+        message,
+        response: currentMessage,
+        user: user.email,
+        date : serverTimestamp()
+      })
+      .then(()=>{
+        console.log("Document successfully written!");
+        setAttempts(prevState => prevState + 1)
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
       })
     })
   }
@@ -31,7 +82,7 @@ const App = () => {
 
     handleTimeout = setTimeout(() => {
       setValue(value);
-    }, 300); 
+    }, 300);
   }
 
   const handleClick = e => {
@@ -41,9 +92,24 @@ const App = () => {
     setValue(message);
   }
 
+  const handlePopUp = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+  }
+
+  const handleLogout = () => {
+    signOut(auth)
+  }
+
   return (
     <>
-      <h1 className="text-4xl font-bold text-center mt-4">CarayanIA</h1>
+      <header className="flex justify-center flex-col">
+        <h1 className="text-4xl font-bold text-center mt-4">CarayanIA</h1>
+        {!logged && <button onClick={handlePopUp}>login</button>}
+        {/* circular avatar with user.photoURL */}
+        {logged && <div className="flex justify-center gap-4"><p className="text-center">{user.email} - Attempts made : {currentAttempts} </p><button onClick={handleLogout}>logout</button></div>}
+
+      </header>
       <form onSubmit={handleSubmit} className="m-auto  px-4 sm:px-5 md:px-6 w-full md:max-w-[500px] lg:max-w-[700px] transition">
         <div className="flex flex-col">
           <label htmlFor="message" className="w-full">
