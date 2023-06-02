@@ -3,7 +3,7 @@ import { complete } from "./openai";
 import { InstagramLogoIcon } from "@radix-ui/react-icons";
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, requestsCollection } from "./firebase";
-import { addDoc, getDocs, query, serverTimestamp, where } from "firebase/firestore";
+import { addDoc, getDocs, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 
 const App = () => {
 
@@ -13,6 +13,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [logged, setLogged] = useState(false)
   const [currentAttempts, setAttempts] = useState(0)
+  const [cafecitoPopUp, setCafecitoPopUp] = useState(false)
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
@@ -42,6 +43,11 @@ const App = () => {
       handlePopUp()
       return
     }
+
+    if(currentAttempts >= 5){
+      handleCafecitoPopUp()
+      return 
+    }
     const message = ref.current.value;
     setMessage("")
     complete(message, data => {
@@ -59,7 +65,8 @@ const App = () => {
         message,
         response: currentMessage,
         user: user.email,
-        date : serverTimestamp()
+        date : serverTimestamp(),
+        cafecito : false
       })
       .then(()=>{
         console.log("Document successfully written!");
@@ -99,6 +106,10 @@ const App = () => {
 
   const handleLogout = () => {
     signOut(auth)
+  }
+
+  const handleCafecitoPopUp = () => {
+    setCafecitoPopUp(true)
   }
 
   return (
@@ -142,6 +153,18 @@ const App = () => {
           </a>
         </nav>
       </footer>
+      {cafecitoPopUp && (
+        <div className="fixed top-0 left-0 w-full px-10 h-full bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded text-gray-700">
+            <h2 className="text-center font-bold text-xl mb-10">Un Cafecito porfa</h2>
+            <p className="text-center mb-10">No olvides que esta app esta hecha con GPT-4 y eso no es gratis, al contrario, se paga en el sudor de esta Barbie Guerrera, asi que si te gusto, pagara prata</p>
+            <div className="flex justify-center items-center gap-2 mt-4">
+              <a href='https://cafecito.app/horagutierrez' rel='noopener' target='_blank'><img srcSet='https://cdn.cafecito.app/imgs/buttons/button_1.png 1x, https://cdn.cafecito.app/imgs/buttons/button_1_2x.png 2x, https://cdn.cafecito.app/imgs/buttons/button_1_3.75x.png 3.75x' src='https://cdn.cafecito.app/imgs/buttons/button_1.png' alt='Invitame un café en cafecito.app' className="" /></a>
+              <button onClick={() => setCafecitoPopUp(false)}>No, gracias</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
