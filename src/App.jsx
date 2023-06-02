@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { complete } from "./openai";
-console.log(import.meta.env)
 
 const App = () => {
 
@@ -67,6 +66,10 @@ const App = () => {
         <h2 className={`text-2xl text-center ${currentMessage.length > 0 ? "text-white" : "text-gray-500"}`}>Respuesta</h2>
         <p>{currentMessage}</p>
       </div>
+      <footer className="p-4 text-xs font-mono font-thin">
+        <p>Esta app esta hecha con ♥ y GPT-4 (lo cual no es gratis) asi que si te gusto, <span className="uppercase font-bold">pagara prata</span>  </p>
+        <a href='https://cafecito.app/horagutierrez' rel='noopener' target='_blank'><img srcSet='https://cdn.cafecito.app/imgs/buttons/button_1.png 1x, https://cdn.cafecito.app/imgs/buttons/button_1_2x.png 2x, https://cdn.cafecito.app/imgs/buttons/button_1_3.75x.png 3.75x' src='https://cdn.cafecito.app/imgs/buttons/button_1.png' alt='Invitame un café en cafecito.app' className="m-auto" /></a>
+      </footer>
     </>
   );
 }
